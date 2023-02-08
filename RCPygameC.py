@@ -1,5 +1,4 @@
 import sys
-#import RPi.GPIO as GPIO
 import pygame
 import socket
 import time
@@ -180,5 +179,5 @@ while True:
 
 
     pygame.display.update()
-    clock.tick(30)
+    clock.tick(240)
     clientSock.close

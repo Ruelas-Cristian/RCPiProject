@@ -30,6 +30,6 @@ while True:
     #mSteering = (steering + 1) * 45
     #print(mSteering)
     #pwm.ChangeDutyCycle(mSteering / 18 + 2.5)
-    clock.tick(10)
+    clock.tick(240)
 
 conn.close()
