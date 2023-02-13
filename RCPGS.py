@@ -1,5 +1,6 @@
 import socket
 import pygame
+import struct
 import RPi.GPIO as GPIO
 
 pygame.init()
@@ -22,14 +23,17 @@ pwm.start(7.5)
 clock = pygame.time.Clock()
 
 while True:
-    data = conn.recv(1024)
-    print(data)
+    data = conn.recv(8)
+    steering, gas, brake = struct.unpack('!fff', data)
+    print('Steering: ', steering)
+    print('Gas: ', gas)
+    print('Brake: ', brake)
     #steer = data.decode()
     #steeringVal = steer.split(".")
     #steering = float(steeringVal[0])
     #mSteering = (steering + 1) * 45
     #print(mSteering)
     #pwm.ChangeDutyCycle(mSteering / 18 + 2.5)
-    clock.tick(240)
+    clock.tick(60)
 
 conn.close()

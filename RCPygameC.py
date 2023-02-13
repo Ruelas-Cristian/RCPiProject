@@ -1,7 +1,8 @@
 import sys
+#import RPi.GPIO as GPIO
 import pygame
 import socket
-import time
+import struct
 
 from pygame.locals import *
 pygame.init()
@@ -10,7 +11,7 @@ screen = pygame.display.set_mode((1000, 1000), 0, 32)
 screen.fill((0, 0, 0))
 
 clientSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-clientSock.connect(('RaspberryPi IP', 8080))
+clientSock.connect(('PI Computer', 8080))
 
 clock = pygame.time.Clock()
 
@@ -47,12 +48,8 @@ while True:
             if event.type == pygame.JOYAXISMOTION:
                 #steering wheel axis is (0), left corresponds to -1, and right corresponds to 1
                 steeringAxis = controller.get_axis(0)
-                time.sleep(.005)
                 mappingSteering = (steeringAxis + 1) * 45
                 print(mappingSteering)
-                #change the servo position like this
-                sendSteer = str(mappingSteering).encode()
-                clientSock.sendall(sendSteer)
 
                 #Acceleration pedal (1), brake pedal (4), clutch pedal (5) all go from -1 (idle) to 1 (pressed all the way)
                 gasPedal = controller.get_axis(1)
@@ -86,6 +83,11 @@ while True:
                 wheelJoyY = controller.get_axis(3)
                 invX = wheelJoyX * - 1
                 invY = wheelJoyY * - 1
+
+                #send everything here
+                data = struct.pack('!fff', mappingSteering, mappingGas, mappingBrake)
+                clientSock.sendall(data)
+
 
             if event.type == QUIT:
                 pygame.quit()
@@ -179,5 +181,5 @@ while True:
 
 
     pygame.display.update()
-    clock.tick(240)
+    clock.tick(60)
     clientSock.close
