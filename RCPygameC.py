@@ -11,7 +11,7 @@ screen = pygame.display.set_mode((1000, 1000), 0, 32)
 screen.fill((0, 0, 0))
 
 clientSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-clientSock.connect(('PI Computer', 8080))
+clientSock.connect(('Raspberry Pi IP', 8080))
 
 clock = pygame.time.Clock()
 
@@ -42,6 +42,10 @@ brakePedal = 0
 clutchPedal = 0
 
 while True:
+    videoFeed = clientSock.recv(640*480*3)
+    video = pygame.image.fromstring(videoFeed, (640, 480, "RGB"))
+    screen.blit(video, (0, 0))
+
     if controller.get_name() == 'FANATEC Wheel' :
         #note of controls
         for event in pygame.event.get():
